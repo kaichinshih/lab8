@@ -13,14 +13,40 @@ function initializePage() {
  	initCamera();
  	initGestures();
  	initRSVPForm();
+  $(".judge-img").click(initGestures);
 }
 
 // init jQuery gestures  
 function initGestures() {
-	// add gestures listener here
+  //add gestures listener here
+	$(function(){
+		$( "div.box" ).bind( "taphold", tapholdHandler );
+    $(".judge-img").bind("taphold", tapholdHandler);
+		function tapholdHandler(event){
+      $( event.target ).addClass( "taphold" );
+			//get the id of the event source
+			var targetIDPrefix = event.target.id;
+			console.log("got prefix: " + targetIDPrefix);
+			//show bio
+			$("#" + targetIDPrefix + "-bio").show();
+		}
+	});
 }
 
 // init RSVP form submit listener
 function initRSVPForm() {
-  // add your code here
+  $('#rsvpForm').submit(function(e) {
+
+  	//Prevents default submit + reload (we only want the submit part)
+  	e.preventDefault();
+  	console.log("submitting form...")
+  	var rsvpEmail = $('#rsvpEmail').val();
+  	//Send the POST request
+  	$.post('addRSVP', { rsvpEmail: rsvpEmail }, postCallback);
+   });
+  
+  function postCallback(res) {
+  	alert("RSVP form successfully submitted!");
+  	$('#rsvpEmail').val(''); //Clear form
+  }	
 }
